@@ -29,12 +29,6 @@ export default function useChatWebSocket(chatid) {
       // Reset reconnect attempts on successful connection
       reconnectAttemptRef.current = 0;
     };
-
-    // Handle incoming messages
-    socket.onmessage = (event) => {
-      setMessages((prevMessages) => [...prevMessages, event.data]);
-    };
-
     // Handle errors
     socket.onerror = (error) => {
       console.error("WebSocket error:", error);
@@ -49,6 +43,21 @@ export default function useChatWebSocket(chatid) {
         attemptReconnect();
       }
     };
+
+
+    // Handle incoming messages
+    socket.onmessage = (event) => {
+      console.log("Received message:", event.data);
+      var msg = {
+        id: Date.now(),
+        text: event.data,
+        sender: "system", //system
+        timestamp: new Date()
+      };
+
+      setMessages((prevMessages) => [...prevMessages, msg]);
+    };
+
   };
 
   const attemptReconnect = () => {
@@ -85,7 +94,27 @@ export default function useChatWebSocket(chatid) {
   // Function to send messages
   const sendMessage = (message) => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      var newUserMessage = {
+        id: Date.now(),
+        text: message,
+        sender: "user", //system
+        timestamp: new Date()
+      };
+      setMessages((prevMessages) => [...prevMessages, newUserMessage]);
       socketRef.current.send(message);
+    }else{
+      console.log("Socket not open, retrying to send message...");
+      // timeinterval to check if the socket is open
+      var interval = setInterval(() => {
+        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+          clearInterval(interval);
+          sendMessage(message); // Retry sending the message
+        } else {
+          console.log("Socket not open yet, retrying...");
+        }
+      }, 300); // Check every second
+
+
     }
   };
 

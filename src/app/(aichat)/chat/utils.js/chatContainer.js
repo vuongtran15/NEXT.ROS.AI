@@ -7,26 +7,19 @@ import useChatWebSocket from "@/hooks/useChatWebSocket";
 
 export function ChatContainer({ item }) {
 
-    const { messages,setChatMessages, sendMessage } = useChatWebSocket(item.id);
-    
+    const { messages, setChatMessages, sendMessage } = useChatWebSocket(item.id);
+
     const messagesEndRef = useRef(null);
 
     useEffect(() => {
         setChatMessages(item.chatHistory || []);
+        if (item.newMsg && item.newMsg !== "") {
+            sendMessage(item.newMsg);
+        }
     }, [item.id]);
 
-
     const fnOnUserMessage = (message) => {
-        console.log(message);
-        const newUserMessage = {
-            id: Date.now(),
-            text: message,
-            sender: "user", //system
-            timestamp: new Date()
-        };
         sendMessage(message);
-
-        
     };
 
     // Scroll to bottom when messages change
