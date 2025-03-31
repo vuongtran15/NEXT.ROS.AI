@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { HiMiniMicrophone } from "react-icons/hi2";
 import { IoAttachSharp } from "react-icons/io5";
 
-
-
 export function InputControl({ allowTyping = true, onMessageSend }) {
     const maxLength = 500;
+    const cooldownTime = 5000; // 5 seconds in milliseconds
     const [charCount, setCharCount] = useState(0);
-    const inputRef = React.useRef(null);
+    const [cooldownActive, setCooldownActive] = useState(false);
+    const [cooldownMessage, setCooldownMessage] = useState("");
+    const inputRef = useRef(null);
+    const cooldownTimerRef = useRef(null);
 
     // handle paste event to limit pasted text length
     const handlePaste = (e) => {
@@ -66,12 +68,39 @@ export function InputControl({ allowTyping = true, onMessageSend }) {
                 e.preventDefault();
                 const message = e.currentTarget.innerText.trim();
                 if (message) {
+                    if (cooldownActive) {
+
+                        if(cooldownMessage) return; // Prevents multiple messages if already showing
+
+                        // Show warning message only when user tries to send during cooldown
+                        const startTime = Date.now();
+                        const updateCooldownMessage = () => {
+                            const remaining = Math.ceil((cooldownTime - (Date.now() - startTime)) / 1000);
+                            if (remaining > 0) {
+                                setCooldownMessage(`Please wait ${remaining} seconds before sending another message.`);
+                                setTimeout(updateCooldownMessage, 1000);
+                            } else {
+                                setCooldownMessage("");
+                            }
+                        };
+                        updateCooldownMessage();
+                        return;
+                    }
+
                     sendMessage(message);
                     // Clear the input right after sending
                     if (inputRef.current) {
                         inputRef.current.innerText = '';
                         setCharCount(0);
                     }
+
+                    // Set cooldown
+                    setCooldownActive(true);
+
+                    cooldownTimerRef.current = setTimeout(() => {
+                        setCooldownActive(false);
+                        //setCooldownMessage(""); // Clear any message when cooldown ends
+                    }, cooldownTime);
                 }
             }
         }
@@ -84,6 +113,15 @@ export function InputControl({ allowTyping = true, onMessageSend }) {
         }
         setCharCount(0);
     };
+
+    // Clean up timer on unmount
+    React.useEffect(() => {
+        return () => {
+            if (cooldownTimerRef.current) {
+                clearTimeout(cooldownTimerRef.current);
+            }
+        };
+    }, []);
 
     return (
         <div className='chat-input-container relative bg-white rounded-lg shadow-sm hover:shadow-md transition-all p-3'>
@@ -113,22 +151,22 @@ export function InputControl({ allowTyping = true, onMessageSend }) {
 
             <div className='chat-input-action flex flex-row justify-between items-center mt-2 px-2'>
                 <div className='left-items'>
-                    <span className={`text-xs ${charCount >= maxLength ? 'text-red-500' : 'text-gray-400'
-                        }`}>
+                    <span className={`text-xs ${charCount >= maxLength ? 'text-red-500' : 'text-gray-400'}`}>
                         {charCount}/{maxLength}
                     </span>
+                    {cooldownMessage && (
+                        <div className="text-xs text-red-500">{cooldownMessage}</div>
+                    )}
                 </div>
                 <div className='right-items flex flex-row gap-3'>
                     <button
-                        className={`action-btn p-1.5 rounded-full transition-colors text-gray-500 ${allowTyping ? 'hover:bg-gray-100 hover:text-gray-700' : 'opacity-50 cursor-not-allowed'
-                            }`}
+                        className={`action-btn p-1.5 rounded-full transition-colors text-gray-500 ${allowTyping ? 'hover:bg-gray-100 hover:text-gray-700' : 'opacity-50 cursor-not-allowed'}`}
                         disabled={!allowTyping}
                     >
                         <IoAttachSharp size={18} />
                     </button>
                     <button
-                        className={`action-btn p-1.5 rounded-full transition-colors text-gray-500 ${allowTyping ? 'hover:bg-gray-100 hover:text-gray-700' : 'opacity-50 cursor-not-allowed'
-                            }`}
+                        className={`action-btn p-1.5 rounded-full transition-colors text-gray-500 ${allowTyping ? 'hover:bg-gray-100 hover:text-gray-700' : 'opacity-50 cursor-not-allowed'}`}
                         disabled={!allowTyping}
                     >
                         <HiMiniMicrophone size={18} />
