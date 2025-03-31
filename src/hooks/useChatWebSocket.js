@@ -113,8 +113,6 @@ export default function useChatWebSocket(chatid) {
           console.log("Socket not open yet, retrying...");
         }
       }, 300); // Check every second
-
-
     }
   };
 
