@@ -52,7 +52,7 @@ export default function useChatWebSocket(chatid, type) {
     socket.onmessage = (event) => {
       console.log("Received message:", event.data);
       var msg = {
-        id: Date.now(),
+        id: uuidv4(),
         text: event.data,
         sender: "system", //system
         timestamp: new Date()
@@ -117,8 +117,16 @@ export default function useChatWebSocket(chatid, type) {
         sender: "user", //system
         timestamp: new Date()
       };
+
       setMessages((prevMessages) => [...prevMessages, newUserMessage]);
-      socketRef.current.send(message);
+      socketRef.current.send(
+        JSON.stringify({
+          id: newUserMessage.id,
+          message: newUserMessage.text,
+          sender: newUserMessage.sender,
+          type: "text",
+        })
+      );
     } else {
       console.log("Socket not open, retrying to send message...");
       // Retry counter
