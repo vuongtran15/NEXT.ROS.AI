@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { UserMessage } from "./userMessage";
 import { SystemMessage } from "./systemMessage";
 import { InputControl } from "./inputControl";
-import useChatWebSocket from "@/hooks/useChatWebSocket";
+import useChatWebSocket from "@/utils/useChatWebSocket";
 
 export function ChatContainer({ item }) {
 
