@@ -1,4 +1,11 @@
 
+
+export const LocalStorageKeys = {
+    SERVER_CHAT_URL: 'http://172.19.137.206:8080',
+};
+
+
+
 // save token to local storage
 export function fnSaveTokenToLocalStorage(token, userInfo) {
     console.log('Saving token to local storage:', token);
@@ -41,4 +48,5 @@ export function fnGetUserFromLocalStorage() {
     }
 
 }
+
 

@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack --experimental-https",
+    "dev": "next dev --turbopack ", 
+    "dev:https": "next dev --turbopack --experimental-https", 
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -16,7 +17,8 @@
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-icons": "^5.5.0"
+    "react-icons": "^5.5.0",
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -24,3 +26,4 @@
     "tailwindcss": "^4"
   }
 }
+

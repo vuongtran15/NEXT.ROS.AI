@@ -1,11 +1,11 @@
 import axios from 'axios';
-import { fnGetTokenFromLocalStorage } from './local';
+import { fnGetTokenFromLocalStorage, LocalStorageKeys } from './local';
 import { verify } from 'jsonwebtoken';
 import { getUserFromToken } from './auth';
 
 // Create an Axios instance with default settings
 const apiClient = axios.create({
-    baseURL: 'http://172.19.137.206:8080', // Replace with your API base URL
+    baseURL: LocalStorageKeys.SERVER_CHAT_URL, // Base URL for the API
     timeout: 10000, // Request timeout in milliseconds (10 seconds)
     headers: {
         'Content-Type': 'application/json',
