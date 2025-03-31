@@ -216,7 +216,7 @@ export function RenderChatIntroduction({ addNewChat }) {
                     <div className="chat-guide flex flex-col gap-4">
                         <div className="chat-name flex flex-row gap-4">
                             <div className="logo">
-                                <img src="/images/bot.gif" alt="logo" />
+                                <img src="/images/aichat/bot.gif" alt="logo" />
                             </div>
                             <div className="chat-text flex flex-col gap-2  place-content-center">
                                 <div className="bot-name font-medium text-2xl">Hi, I am Kibago, your personal AI assistant</div>
@@ -229,15 +229,15 @@ export function RenderChatIntroduction({ addNewChat }) {
                                 <div className="card-header-sub opacity-50 text-xs pl-2">Use for Office and Study</div>
                                 <div className="card-body pt-5 flex flex-col gap-2.5">
                                     <RenderToolCardItem
-                                        image={"/images/chat.png"}
+                                        image={"/images/aichat/chat.png"}
                                         title={"Chat AI Assistant"}
                                         description={"Ask me anything!"} />
                                     <RenderToolCardItem
-                                        image={"/images/document.png"}
+                                        image={"/images/aichat/document.png"}
                                         title={"Reading Assistant"}
                                         description={"Summarize and extract information from documents"} />
                                     <RenderToolCardItem
-                                        image={"/images/voice.png"}
+                                        image={"/images/aichat/voice.png"}
                                         title={"Voice Assistant"}
                                         description={"Convert text to speech and vice versa"} />
                                 </div>

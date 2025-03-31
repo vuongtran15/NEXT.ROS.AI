@@ -154,7 +154,7 @@ export default function Login() {
       <div className="login-form">
         <div className='login-body'>
           <div className='login-header'>
-            <img src="/images/logo.png" className='logo' />
+            <img src="/images/aichat/logo.png" className='logo' />
             <div className='login-title'>ROS</div>
           </div>
           <div className='form-content'>

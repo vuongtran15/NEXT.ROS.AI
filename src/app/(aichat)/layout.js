@@ -38,7 +38,7 @@ export default function LayoutMain({ children }) {
         <div className="main-layout">
             <div className="main-menu">
                 <div className='logo'>
-                    <img src="/images/logo.png" alt="Logo" />
+                    <img src="/images/aichat/logo.png" alt="Logo" />
                 </div>
                 <div className='menu-items'>
                     <Link href="/chat" className={`menu-item ${pathname === '/chat' ? 'active' : ''}`}>
