@@ -8,10 +8,10 @@ const JWT_SECRET = process.env.JWT_SECRET;
  * Get user information from the JWT token stored in cookies
  * @returns {Object|null} The decoded token payload or null if not authenticated
  */
-export function getUserFromToken() {
+export async function getUserFromToken() {
   try {
     // Get the cookie
-    const cookieStore = cookies();
+    const cookieStore =await cookies();
     const token = cookieStore.get('auth-token')?.value;
     
     if (!token) {
