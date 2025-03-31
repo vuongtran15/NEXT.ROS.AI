@@ -18,7 +18,15 @@ const ChatPage = () => {
             id: Date.now(),
             title: msg || 'New Conversation',
             date: new Date().toISOString().split('T')[0],
-            isActive: true
+            isActive: true,
+            chatHistory: [
+                {
+                    id: Date.now(),
+                    text: msg || 'Hello! How can I assist you today?',
+                    sender: 'user',
+                    timestamp: new Date().toISOString()
+                }
+            ]
         };
         setChatDataSource([newChat, ...chatDataSource]);
     };

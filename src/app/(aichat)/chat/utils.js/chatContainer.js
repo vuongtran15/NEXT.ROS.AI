@@ -9,7 +9,7 @@ export function ChatContainer({ item }) {
     const messagesEndRef = useRef(null);
 
     useEffect(() => {
-        setMessages([]);
+        setMessages(item.chatHistory || []);
     }, [item.id]);
 
     const fnOnUserMessage = (message) => {
