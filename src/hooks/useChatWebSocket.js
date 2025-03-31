@@ -2,23 +2,32 @@
 
 import { fnGetUserFromLocalStorage, LocalStorageKeys } from "@/utils/local";
 import { useEffect, useRef, useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
 
 export default function useChatWebSocket(chatid) {
   const [messages, setMessages] = useState([]);
   const socketRef = useRef(null);
+  const reconnectAttemptRef = useRef(0);
+  const maxReconnectAttempts = 5;
+  const reconnectTimeoutRef = useRef(null);
+  const mountedRef = useRef(true);
 
-  useEffect(() => {
-    // Initialize Socket.IO client
+  const connect = () => {
     var user = fnGetUserFromLocalStorage();
     console.log("User from local storage:", user);
     console.log("Chat ID:", chatid);
+    // random uuid for the socket connection
+    var uuid = uuidv4();
+    uuid = uuid.replace(/-/g, "");
 
-    const socket = new WebSocket(LocalStorageKeys.SERVER_CHAT_URL + "/ws/"+  + chatid);
+    const socket = new WebSocket(LocalStorageKeys.SERVER_CHAT_URL + "/ws/" + chatid + "_" + uuid);
     socketRef.current = socket;
 
     // Handle connection open
     socket.onopen = () => {
       console.log("WebSocket connection established");
+      // Reset reconnect attempts on successful connection
+      reconnectAttemptRef.current = 0;
     };
 
     // Handle incoming messages
@@ -32,13 +41,44 @@ export default function useChatWebSocket(chatid) {
     };
 
     // Handle connection close
-    socket.onclose = () => {
-      console.log("WebSocket connection closed");
+    socket.onclose = (event) => {
+      console.log("WebSocket connection closed", event.code, event.reason);
+
+      // Attempt to reconnect if not a normal closure and component is still mounted
+      if (mountedRef.current && event.code !== 1000) {
+        attemptReconnect();
+      }
     };
+  };
+
+  const attemptReconnect = () => {
+    if (reconnectAttemptRef.current >= maxReconnectAttempts) {
+      console.log("Max reconnection attempts reached");
+      return;
+    }
+
+    const reconnectDelay = Math.min(1000 * (2 ** reconnectAttemptRef.current), 30000);
+    console.log(`Attempting to reconnect in ${reconnectDelay}ms (attempt ${reconnectAttemptRef.current + 1})`);
+
+    reconnectTimeoutRef.current = setTimeout(() => {
+      reconnectAttemptRef.current += 1;
+      connect();
+    }, reconnectDelay);
+  };
+
+  useEffect(() => {
+    mountedRef.current = true;
+    connect();
 
     // Cleanup on unmount
     return () => {
-      socket.close();
+      mountedRef.current = false;
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+      }
+      if (socketRef.current) {
+        socketRef.current.close();
+      }
     };
   }, [chatid]); // Re-run effect if URL changes
 
