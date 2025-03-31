@@ -11,11 +11,9 @@ export default function useChatWebSocket(chatid) {
     // Initialize Socket.IO client
     var user = fnGetUserFromLocalStorage();
     console.log("User from local storage:", user);
+    console.log("Chat ID:", chatid);
 
-    console.log(chatid);
-    
-
-    const socket = new WebSocket(LocalStorageKeys.SERVER_CHAT_URL + "/ws/"+  + user.empid);
+    const socket = new WebSocket(LocalStorageKeys.SERVER_CHAT_URL + "/ws/"+  + chatid);
     socketRef.current = socket;
 
     // Handle connection open
