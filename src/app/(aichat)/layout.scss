@@ -1,0 +1,121 @@
+.main-layout{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: linear-gradient(125deg, rgba(106, 74, 248, 0.95), rgba(247, 241, 255, 0.5), rgba(135, 194, 255, 0.8));
+    display: flex;
+    flex-direction: row;
+    .main-menu{
+        width: 70px;
+        box-sizing: border-box;
+        min-width: 70px;
+        max-width: 70px;
+        background: transparent;
+        padding: 10px 0px 10px 0px;
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        .logo{
+            width: 100%;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            img{
+                width: 60%;
+                object-fit: contain;
+            }
+        }
+        .menu-items {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            margin-top: 10px;
+            
+            .menu-item {
+                width: 60px;
+                height: 60px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                border-radius: 10px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                text-decoration: none;
+                gap: 3px;
+                color: white; /* Changed text color to white */
+                
+                img {
+                    width: 24px;
+                    height: 24px;
+                    margin-bottom: 5px;
+                }
+                
+                span {
+                    font-size: 10px;
+                    text-align: center;
+                }
+                
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.2);
+                    transform: scale(1.05);
+                }
+                
+                &.active {
+                    background-color: rgba(255, 255, 255, 0.3);
+                }
+            }
+        }
+        
+        .logout {
+            margin-top: auto;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding-bottom: 15px;
+            
+            .logout-button {
+                width: 60px;
+                height: 60px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                border-radius: 10px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                background: none;
+                border: none;
+                color: white; /* Changed text color to white */
+                
+                img {
+                    width: 24px;
+                    height: 24px;
+                    margin-bottom: 5px;
+                }
+                
+                span {
+                    font-size: 10px;
+                    text-align: center;
+                }
+                
+                &:hover {
+                    background-color: rgba(255, 100, 100, 0.1);
+                }
+            }
+        }
+    }
+    .main-body{
+        flex-grow: 1;
+        background: #f7f8fc;
+        margin: 10px 10px 10px 0px;
+        border-radius: 12px;
+        box-sizing: border-box;
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+        overflow: hidden;
+    }
+}
