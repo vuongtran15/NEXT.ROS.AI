@@ -2,17 +2,12 @@
 import React, { useState } from 'react';
 import './page.scss';
 import { FiSearch, FiEdit, FiTrash2 } from 'react-icons/fi';
-import { RenderChatBoxContainer, RenderChatIntroduction } from './chat-utils';
+import { ChatContainer, Introduction } from './utils.js';
 
 
 const ChatPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
-    const [chatDataSource, setChatDataSource] = useState([
-        { id: 1, title: 'How to use React hooks', date: '2025-03-22', isActive: false },
-        { id: 2, title: 'Building responsive layouts', date: '2025-03-21', isActive: false },
-        { id: 3, title: 'Next.js optimization techniques', date: '2025-03-20', isActive: false },
-        { id: 4, title: 'JavaScript async/await patterns', date: '2025-03-19', isActive: false }
-    ]);
+    const [chatDataSource, setChatDataSource] = useState([]);
 
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
@@ -100,9 +95,9 @@ const ChatPage = () => {
             <div className='chat-content'>
 
                 {chatDataSource.length > 0 && chatDataSource.find(chat => chat.isActive) ? (
-                    <RenderChatBoxContainer item={chatDataSource.find(chat => chat.isActive)} /> 
+                    <ChatContainer item={chatDataSource.find(chat => chat.isActive)} /> 
                 ) : (
-                    <RenderChatIntroduction addNewChat={addNewChat} />
+                    <Introduction addNewChat={addNewChat} />
                 )}
 
             </div>
