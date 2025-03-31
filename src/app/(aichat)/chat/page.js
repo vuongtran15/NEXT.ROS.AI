@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import './page.scss';
 import { FiSearch, FiEdit, FiTrash2 } from 'react-icons/fi';
 import { ChatContainer, Introduction } from './utils.js';
+import { v4 as uuidv4 } from 'uuid';
 
 
 const ChatPage = () => {
@@ -15,10 +16,11 @@ const ChatPage = () => {
 
     const addNewChat = (msg) => {
         const newChat = {
-            id: Date.now(),
+            id: uuidv4(),
             title: msg || 'New Conversation',
             date: new Date().toISOString().split('T')[0],
             isActive: true,
+            type: 'text',
             newMsg: msg || 'Hello! How can I assist you today?',
             chatHistory: []
         };

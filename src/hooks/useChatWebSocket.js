@@ -4,7 +4,7 @@ import { fnGetUserFromLocalStorage, LocalStorageKeys } from "@/utils/local";
 import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 
-export default function useChatWebSocket(chatid) {
+export default function useChatWebSocket(chatid, type) {
   const [messages, setMessages] = useState([]);
   const socketRef = useRef(null);
   const reconnectAttemptRef = useRef(0);
@@ -14,13 +14,16 @@ export default function useChatWebSocket(chatid) {
 
   const connect = () => {
     var user = fnGetUserFromLocalStorage();
-    console.log("User from local storage:", user);
     console.log("Chat ID:", chatid);
-    // random uuid for the socket connection
-    var uuid = uuidv4();
-    uuid = uuid.replace(/-/g, "");
+    var empid = user?.empid || "";
 
-    const socket = new WebSocket(LocalStorageKeys.SERVER_CHAT_URL + "/ws/" + chatid + "_" + uuid);
+    if (empid === "" || empid === undefined) {
+      msgEmployeeIdNotFound();
+      return;
+    }
+
+
+    const socket = new WebSocket(LocalStorageKeys.SERVER_CHAT_URL + "/ws/" + empid + "__" + chatid + "__" + type + "__" + Date.now());
     socketRef.current = socket;
 
     // Handle connection open
@@ -91,28 +94,51 @@ export default function useChatWebSocket(chatid) {
     };
   }, [chatid]); // Re-run effect if URL changes
 
+  const msgEmployeeIdNotFound = () => {
+    setTimeout(() => {
+      console.log("Employee ID not found, sending message to chat...");
+      var newUserMessage = {
+        id: uuidv4(),
+        text: "Employee ID not found",
+        sender: "system", //system
+        timestamp: new Date()
+      };
+
+      setMessages((prevMessages) => [...prevMessages, newUserMessage]);
+    }, 1000);
+  }
+
   // Function to send messages
   const sendMessage = (message) => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
       var newUserMessage = {
-        id: Date.now(),
+        id: uuidv4(),
         text: message,
         sender: "user", //system
         timestamp: new Date()
       };
       setMessages((prevMessages) => [...prevMessages, newUserMessage]);
       socketRef.current.send(message);
-    }else{
+    } else {
       console.log("Socket not open, retrying to send message...");
-      // timeinterval to check if the socket is open
+      // Retry counter
+      let retryCount = 0;
+      const maxRetries = 5;
+
       var interval = setInterval(() => {
         if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
           clearInterval(interval);
           sendMessage(message); // Retry sending the message
         } else {
-          console.log("Socket not open yet, retrying...");
+          retryCount++;
+          console.log(`Socket not open yet, retrying... (${retryCount}/${maxRetries})`);
+
+          if (retryCount >= maxRetries) {
+            clearInterval(interval);
+            console.log("Max retry attempts reached. Message not sent.");
+          }
         }
-      }, 300); // Check every second
+      }, 300);
     }
   };
 

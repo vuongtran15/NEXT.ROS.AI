@@ -5,9 +5,10 @@ import { SystemMessage } from "./systemMessage";
 import { InputControl } from "./inputControl";
 import useChatWebSocket from "@/hooks/useChatWebSocket";
 
+
 export function ChatContainer({ item }) {
 
-    const { messages, setChatMessages, sendMessage } = useChatWebSocket(item.id);
+    const { messages, setChatMessages, sendMessage } = useChatWebSocket(item.id, item.type);
 
     const messagesEndRef = useRef(null);
 
