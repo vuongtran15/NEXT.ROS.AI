@@ -1,7 +1,9 @@
+
 // save token to local storage
-export function fnSaveTokenToLocalStorage(token) {
+export function fnSaveTokenToLocalStorage(token, userInfo) {
     console.log('Saving token to local storage:', token);
     localStorage.setItem('auth-token', token);
+    localStorage.setItem('auth-user', JSON.stringify(userInfo));
 }
 // get token from local storage
 export function fnGetTokenFromLocalStorage() {
@@ -12,6 +14,7 @@ export function fnRemoveTokenFromLocalStorage() {
     try {
         console.log('Removing token from local storage');
         window.localStorage.removeItem('auth-token');
+        window.localStorage.removeItem('auth-user');
         // Verify the token was actually removed
         const token = window.localStorage.getItem('auth-token');
         if (!token) {
@@ -22,26 +25,20 @@ export function fnRemoveTokenFromLocalStorage() {
     }
 }
 
-
-export async function verifyAuth() {
+export function fnGetUserFromLocalStorage() {
     try {
-        const options = {};
-        
-        // Add token from localStorage to Authorization header if it exists
-        const localToken = fnGetTokenFromLocalStorage();
-        if (localToken) {
-            options.headers = {
-                'Authorization': `Bearer ${localToken}`
-            };
+        console.log('Getting user from local storage');
+        const user = window.localStorage.getItem('auth-user');
+        if (user) {
+            return JSON.parse(user);
+        } else {
+            console.log('No user found in local storage');
+            return null;
         }
-        
-        const response = await fetch('/api/auth/verify', options);
-        return await response.json();
     } catch (error) {
-        console.error('Error verifying authentication:', error);
-        return {
-            authenticated: false,
-            message: 'Error verifying authentication'
-        };
+        console.error('Error getting user from localStorage:', error);
+        return null;
     }
+
 }
+

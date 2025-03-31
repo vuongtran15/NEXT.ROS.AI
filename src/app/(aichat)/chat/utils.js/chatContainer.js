@@ -2,15 +2,26 @@ import React, { useState, useEffect, useRef } from "react";
 import { UserMessage } from "./userMessage";
 import { SystemMessage } from "./systemMessage";
 import { InputControl } from "./inputControl";
+import { fnGetUserFromLocalStorage } from "@/utils/local";
 
 export function ChatContainer({ item }) {
 
     const [messages, setMessages] = useState([]);
     const messagesEndRef = useRef(null);
+    
 
     useEffect(() => {
+        fnGetUserInfo();
         setMessages(item.chatHistory || []);
     }, [item.id]);
+
+
+    const fnGetUserInfo = async () => {
+        var user = fnGetUserFromLocalStorage();
+        console.log(user);
+    };
+
+    
 
     const fnOnUserMessage = (message) => {
         console.log(message);

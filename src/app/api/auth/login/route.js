@@ -10,7 +10,7 @@ const USERS = [
 ];
 
 // In production, use a secure environment variable for the secret
-const JWT_SECRET = process.env.JWT_SECRET || 'a-very-strong-and-secure-key-12345!@#$%';
+const JWT_SECRET = "EcRpYu5qBM51MFTsWvJYDGAOKuSlxOpjBp5HuEUqXJxez7HfbJhyy4jcZriIGrEl";
 
 export async function POST(request) {
   try {
@@ -30,8 +30,6 @@ export async function POST(request) {
         username: username.trim(),
         password: password.trim()
       });
-      console.log("API Response:", response);
-
 
       // Get the user data from the response
       const user = response.data || response;
@@ -60,6 +58,10 @@ export async function POST(request) {
         success: true,
         message: 'Login successful',
         token,
+        userInfo: {
+          empid: user.EmpId,
+          username: user.EmpName,
+        }
       });
     } catch (apiError) {
       return NextResponse.json(

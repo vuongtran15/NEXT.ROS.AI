@@ -73,7 +73,7 @@ export default function Login() {
           // Set login success state
           setLoginSuccess(true);
           // Save the token to local storage
-          fnSaveTokenToLocalStorage(data.token);
+          fnSaveTokenToLocalStorage(data.token, data.userInfo);
           // Wait for 1 second before redirecting
           setTimeout(() => {
             router.push('/'); // Redirect to dashboard after login
