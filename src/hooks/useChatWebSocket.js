@@ -108,6 +108,13 @@ export default function useChatWebSocket(chatid, type) {
     }, 1000);
   }
 
+  const destroyWebSocket = () => {
+    if (socketRef.current) {
+      socketRef.current.close();
+      socketRef.current = null;
+    }
+  };
+
   // Function to send messages
   const sendMessage = (message) => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
@@ -154,5 +161,5 @@ export default function useChatWebSocket(chatid, type) {
     setMessages(newMessages);
   };
 
-  return { messages, setChatMessages, sendMessage };
+  return { messages, setChatMessages, sendMessage, destroyWebSocket };
 }

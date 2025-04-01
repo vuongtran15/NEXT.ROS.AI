@@ -8,7 +8,7 @@ import useChatWebSocket from "@/hooks/useChatWebSocket";
 
 export function ChatContainer({ item }) {
 
-    const { messages, setChatMessages, sendMessage } = useChatWebSocket(item.id, item.type);
+    const { messages, setChatMessages, sendMessage, destroyWebSocket } = useChatWebSocket(item.id, item.type);
 
     const messagesEndRef = useRef(null);
 
@@ -17,6 +17,11 @@ export function ChatContainer({ item }) {
         if (item.newMsg && item.newMsg !== "") {
             sendMessage(item.newMsg);
         }
+
+        return () => {
+            destroyWebSocket();
+        }
+
     }, [item.id]);
 
     const fnOnUserMessage = (message) => {
