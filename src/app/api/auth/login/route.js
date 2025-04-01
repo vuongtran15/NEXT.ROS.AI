@@ -25,11 +25,13 @@ export async function POST(request) {
     }
 
     try {
+      console.log("Calling API with username:", username, "and password:", password);
       // Call the API with proper error handling
       const response = await apiClient.post("/user/login", {
         username: username.trim(),
         password: password.trim()
       });
+      console.log("API response:", response);
 
       // Get the user data from the response
       const user = response.data || response;
@@ -64,6 +66,7 @@ export async function POST(request) {
         }
       });
     } catch (apiError) {
+      console.error('Error during login:', apiError);
       return NextResponse.json(
         {
           success: false,
@@ -74,6 +77,7 @@ export async function POST(request) {
       );
     }
   } catch (error) {
+    
     return NextResponse.json(
       { success: false, message: 'An error occurred during login' },
       { status: 500 }

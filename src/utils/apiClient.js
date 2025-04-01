@@ -5,7 +5,7 @@ import { getUserFromToken } from './auth';
 
 // Create an Axios instance with default settings
 const apiClient = axios.create({
-    baseURL: LocalStorageKeys.SERVER_CHAT_URL, // Base URL for the API
+    baseURL: LocalStorageKeys.SERVER_API_URL, // Base URL for the API
     timeout: 10000, // Request timeout in milliseconds (10 seconds)
     headers: {
         'Content-Type': 'application/json',
