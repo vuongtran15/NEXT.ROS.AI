@@ -41,3 +41,5 @@ yarn-error.log*
 next-env.d.ts
 
 certificates
+/.vs/NEXT.ROS.AI/CopilotIndices/17.13.430.18484
+/.vs
