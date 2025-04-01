@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { fnGetTokenFromLocalStorage, LocalStorageKeys } from './local';
-import { verify } from 'jsonwebtoken';
+import { LocalStorageKeys } from './local';
 import { getUserFromToken } from './auth';
 
 // Create an Axios instance with default settings
