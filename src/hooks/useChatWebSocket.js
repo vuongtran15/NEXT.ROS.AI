@@ -42,7 +42,8 @@ export default function useChatWebSocket(chatid, type) {
       console.log("WebSocket connection closed", event.code, event.reason);
 
       // Attempt to reconnect if not a normal closure and component is still mounted
-      if (mountedRef.current && event.code !== 1000) {
+      // reconnect nó phạm vào việc đổi chatid
+      if (mountedRef.current && event.code !== 1005) {
         attemptReconnect();
       }
     };
@@ -96,7 +97,6 @@ export default function useChatWebSocket(chatid, type) {
 
   const msgEmployeeIdNotFound = () => {
     setTimeout(() => {
-      console.log("Employee ID not found, sending message to chat...");
       var newUserMessage = {
         id: uuidv4(),
         text: "Employee ID not found",

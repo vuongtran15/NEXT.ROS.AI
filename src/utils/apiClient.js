@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { LocalStorageKeys } from './local';
-import { getUserFromToken } from './auth';
+import { fnGetUserFromLocalStorage, LocalStorageKeys } from './local';
 
 // Create an Axios instance with default settings
 const apiClient = axios.create({
@@ -9,15 +8,27 @@ const apiClient = axios.create({
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        "Access-Control-Allow-Origin": "*"
     },
 });
 
 // Request Interceptor
 apiClient.interceptors.request.use(
     async (config) => {
-        var token = await getUserFromToken();
-        console.log("Token from local storage:", token);
+        // var token = await getUserFromToken();
+        // console.log("Token from local storage:", token);
         // Add authentication token if available (e.g., from localStorage)
+        var user = fnGetUserFromLocalStorage();
+        console.log("User from local storage:", user);
+        var empIds = user?.empid || "";
+
+        if(config.url.indexOf("empid=")== -1){
+            if (empIds) {
+                config.url += config.url.indexOf("?") === -1 ? `?empid=${empIds}` : `&empid=${empIds}`;
+            }
+        }
+
+
         return config;
     },
     (error) => {

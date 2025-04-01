@@ -2,7 +2,9 @@
 
 export const LocalStorageKeys = {
     SERVER_CHAT_URL: 'http://172.19.137.206:8080',
-    SERVER_API_URL: 'http://172.19.18.35:8201',
+    //SERVER_API_URL: 'http://172.19.18.35:8201',
+    SERVER_API_URL: 'http://172.19.137.206:5204',
+    
 };
 
 
@@ -35,7 +37,6 @@ export function fnRemoveTokenFromLocalStorage() {
 
 export function fnGetUserFromLocalStorage() {
     try {
-        console.log('Getting user from local storage');
         const user = window.localStorage.getItem('auth-user');
         if (user) {
             return JSON.parse(user);

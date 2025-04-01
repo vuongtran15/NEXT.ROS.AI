@@ -1,9 +1,9 @@
-'use client';
+"use client";
 import React, { useState } from 'react';
 import './page.scss';
 import { FiSearch, FiEdit, FiTrash2 } from 'react-icons/fi';
 import { ChatContainer, Introduction } from './utils.js';
-import { v4 as uuidv4 } from 'uuid';
+import apiClient from '@/utils/apiClient';
 
 
 const ChatPage = () => {
@@ -13,6 +13,23 @@ const ChatPage = () => {
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
     };
+
+    const fnGetConversationByEmpId = () => {
+        apiClient.get("/api/aichat/Conversation/GetListByEmpId")
+            .then((conversations) => {
+                
+                console.log("Conversations:", conversations);
+                setChatDataSource(conversations || []);
+                
+            })
+            .catch((error) => {
+                console.error("Error fetching conversations:", error);
+            });
+    }
+
+    React.useEffect(() => {
+        fnGetConversationByEmpId();
+    }, []);
 
     const addNewChat = (msg) => {
         const newChat = {
@@ -99,7 +116,7 @@ const ChatPage = () => {
             <div className='chat-content'>
 
                 {chatDataSource.length > 0 && chatDataSource.find(chat => chat.isActive) ? (
-                    <ChatContainer item={chatDataSource.find(chat => chat.isActive)} /> 
+                    <ChatContainer item={chatDataSource.find(chat => chat.isActive)} />
                 ) : (
                     <Introduction addNewChat={addNewChat} />
                 )}
