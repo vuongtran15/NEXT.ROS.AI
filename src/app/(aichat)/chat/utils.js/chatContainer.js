@@ -8,8 +8,8 @@ import useChatWebSocket from "@/hooks/useChatWebSocket";
 
 export function ChatContainer({ item }) {
 
-    const { messages, setChatMessages, sendMessage, destroyWebSocket } = useChatWebSocket(item.id, item.type);
-
+    const { messages, setChatMessages, sendMessage, destroyWebSocket } = useChatWebSocket(item.id, item.type, (command, msg) => fnWebSocketCallbackCommand(command, msg));
+    const [allowTyping, setAllowTyping] = useState(true);
     const messagesEndRef = useRef(null);
 
     useEffect(() => {
@@ -25,8 +25,14 @@ export function ChatContainer({ item }) {
     }, [item.id]);
 
     const fnOnUserMessage = (message) => {
+        setAllowTyping(false);
         sendMessage(message);
     };
+
+    const fnWebSocketCallbackCommand = (command, msg) => {
+        setAllowTyping(true);
+    }
+
 
     // Scroll to bottom when messages change
     useEffect(() => {
@@ -55,7 +61,7 @@ export function ChatContainer({ item }) {
                 </div>
             </div>
             <div className="chat-control chat-container container mx-auto px-4 mb-2">
-                <InputControl allowTyping={true} onMessageSend={msg => fnOnUserMessage(msg)} />
+                <InputControl allowTyping={allowTyping} onMessageSend={msg => fnOnUserMessage(msg)} />
             </div>
         </div>
     );

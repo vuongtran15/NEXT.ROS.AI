@@ -4,7 +4,7 @@ import { fnGetUserFromLocalStorage, LocalStorageKeys } from "@/utils/local";
 import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 
-export default function useChatWebSocket(chatid, type) {
+export default function useChatWebSocket(chatid, type, callbackCommand = null) {
   const [messages, setMessages] = useState([]);
   const socketRef = useRef(null);
   const reconnectAttemptRef = useRef(0);
@@ -60,6 +60,7 @@ export default function useChatWebSocket(chatid, type) {
       };
 
       setMessages((prevMessages) => [...prevMessages, msg]);
+      fnCallBackCommand("onMessageReceived");
     };
 
   };
@@ -78,6 +79,12 @@ export default function useChatWebSocket(chatid, type) {
       connect();
     }, reconnectDelay);
   };
+
+  const fnCallBackCommand = (command) => {
+    if (callbackCommand && typeof callbackCommand === "function") {
+      callbackCommand(command);
+    }
+  }
 
   useEffect(() => {
     mountedRef.current = true;
