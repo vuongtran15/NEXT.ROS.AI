@@ -4,6 +4,7 @@ import './page.scss';
 import { FiSearch, FiEdit, FiTrash2 } from 'react-icons/fi';
 import { ChatContainer, Introduction } from './utils.js';
 import apiClient from '@/utils/apiClient';
+import { v4 as uuidv4 } from 'uuid';
 
 
 const ChatPage = () => {
