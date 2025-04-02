@@ -50,44 +50,45 @@ export default function useChatWebSocket(chatid, type, callbackCommand = null) {
 
 
     // Handle incoming messages
-    socket.onmessage = (event) => {
-      var data = JSON.parse(event.data);
-      if (data.content == "END_OF_MESSAGE") {
-        fnCallBackCommand("END_OF_MESSAGE");
-        return;
-      }
-      var msgId = data.msgid;
-      // Check if this message ID already exists in our messages
-      const existingMessageIndex = messages.findIndex(m => m.id === msgId);
-      console.log("Existing message index:", existingMessageIndex);
+    socket.onmessage = (event) => handRecieiveMessage(event);
 
-      if (existingMessageIndex !== -1) {
-        // If message exists, create a new array with the updated message
-        const updatedMessages = [...messages];
-        updatedMessages[existingMessageIndex] = {
-          ...updatedMessages[existingMessageIndex],
-          text: updatedMessages[existingMessageIndex].text + data.content
+  };
+
+
+  const handRecieiveMessage = (event) => {
+    var data = JSON.parse(event.data);
+    if (data.content == "END_OF_MESSAGE") {
+      fnCallBackCommand("END_OF_MESSAGE");
+      return;
+    }
+    var msgId = data.msgid;
+
+    setMessages((prevMessages) => {
+
+      // Check if the message already exists in the state
+      const existingIndex = prevMessages.findIndex(m => m.id === msgId);
+      if (existingIndex !== -1) {
+        // If it exists, update the message text
+        const updatedMessages = [...prevMessages];
+        updatedMessages[existingIndex] = {
+          ...updatedMessages[existingIndex],
+          text: updatedMessages[existingIndex].text + data.content
         };
-        setMessages(updatedMessages);
-        return; // Exit early since we've updated the existing message
+        return updatedMessages;
       } else {
-        // Create a new message if not found
+        // If it doesn't exist, add a new message to the state
         let msg = {
-          id: msgId || uuidv4(),
+          id: msgId,
           text: data.content,
           sender: "assistant",
           dataType: "text",
           timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19)
         };
-        setMessages((prevMessages) => [...prevMessages, msg]);
+        return [...prevMessages, msg];
       }
 
-      
-
-
-    };
-
-  };
+    })
+  }
 
   const attemptReconnect = () => {
     if (reconnectAttemptRef.current >= maxReconnectAttempts) {
