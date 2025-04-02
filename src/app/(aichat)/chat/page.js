@@ -16,7 +16,7 @@ const ChatPage = () => {
     };
 
     const fnGetConversationByEmpId = () => {
-        apiClient.get("/api/aichat/Conversation/GetListByEmpId")
+        apiClient.get("/api/aichat/Client/GetListByEmpId")
             .then((conversations) => {
                 
                 console.log("Conversations:", conversations);

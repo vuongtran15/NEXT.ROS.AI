@@ -108,7 +108,7 @@ export default function useChatWebSocket(chatid, type, callbackCommand = null) {
         id: uuidv4(),
         text: "Employee ID not found",
         sender: "system", //system
-        timestamp: new Date()
+        timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19)
       };
 
       setMessages((prevMessages) => [...prevMessages, newUserMessage]);
@@ -125,21 +125,20 @@ export default function useChatWebSocket(chatid, type, callbackCommand = null) {
   // Function to send messages
   const sendMessage = (message) => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-      var newUserMessage = {
-        id: uuidv4(),
-        text: message,
-        sender: "user", //system
-        timestamp: new Date()
-      };
+      var msg = [
+        {
+          id: uuidv4(),
+          text: message,
+          sender: "user", //system
+          dataType: "text",
+          timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19)
+        }
+      ];
+      var newUserMessage = msg.find(m => m.dataType === "text") || msg[0];
 
       setMessages((prevMessages) => [...prevMessages, newUserMessage]);
       socketRef.current.send(
-        JSON.stringify({
-          id: newUserMessage.id,
-          message: newUserMessage.text,
-          sender: newUserMessage.sender,
-          type: "text",
-        })
+        JSON.stringify(msg)
       );
     } else {
       console.log("Socket not open, retrying to send message...");
