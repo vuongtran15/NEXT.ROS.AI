@@ -33,6 +33,13 @@ const ChatPage = () => {
     }, []);
 
     const addNewChat = (msg) => {
+        // clear isActive for all chats
+        const updatedHistory = chatDataSource.map(chat => ({
+            ...chat,
+            isActive: false
+        }));
+
+
         const newChat = {
             id: uuidv4(),
             title: msg || 'New Conversation',
@@ -41,7 +48,7 @@ const ChatPage = () => {
             type: 'text',
             newMsg: msg || '',
         };
-        setChatDataSource([newChat, ...chatDataSource]);
+        setChatDataSource([newChat, ...updatedHistory]);
     };
 
     const selectChat = (id) => {
