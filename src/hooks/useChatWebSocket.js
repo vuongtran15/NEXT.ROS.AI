@@ -51,16 +51,40 @@ export default function useChatWebSocket(chatid, type, callbackCommand = null) {
 
     // Handle incoming messages
     socket.onmessage = (event) => {
-      console.log("Received message:", event.data);
-      var msg = {
-        id: uuidv4(),
-        text: event.data,
-        sender: "system", //system
-        timestamp: new Date()
-      };
+      var data = JSON.parse(event.data);
+      if (data.content == "END_OF_MESSAGE") {
+        fnCallBackCommand("END_OF_MESSAGE");
+        return;
+      }
+      var msgId = data.msgid;
+      // Check if this message ID already exists in our messages
+      const existingMessageIndex = messages.findIndex(m => m.id === msgId);
+      console.log("Existing message index:", existingMessageIndex);
 
-      setMessages((prevMessages) => [...prevMessages, msg]);
-      fnCallBackCommand("onMessageReceived");
+      if (existingMessageIndex !== -1) {
+        // If message exists, create a new array with the updated message
+        const updatedMessages = [...messages];
+        updatedMessages[existingMessageIndex] = {
+          ...updatedMessages[existingMessageIndex],
+          text: updatedMessages[existingMessageIndex].text + data.content
+        };
+        setMessages(updatedMessages);
+        return; // Exit early since we've updated the existing message
+      } else {
+        // Create a new message if not found
+        let msg = {
+          id: msgId || uuidv4(),
+          text: data.content,
+          sender: "assistant",
+          dataType: "text",
+          timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19)
+        };
+        setMessages((prevMessages) => [...prevMessages, msg]);
+      }
+
+      
+
+
     };
 
   };
@@ -108,6 +132,7 @@ export default function useChatWebSocket(chatid, type, callbackCommand = null) {
         id: uuidv4(),
         text: "Employee ID not found",
         sender: "system", //system
+        dataType: "text",
         timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19)
       };
 
@@ -123,12 +148,12 @@ export default function useChatWebSocket(chatid, type, callbackCommand = null) {
   };
 
   // Function to send messages
-  const sendMessage = (message) => {
+  const sendMessage = (data) => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
       var msg = [
         {
           id: uuidv4(),
-          text: message,
+          text: data.text,
           sender: "user", //system
           dataType: "text",
           timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19)
@@ -149,7 +174,7 @@ export default function useChatWebSocket(chatid, type, callbackCommand = null) {
       var interval = setInterval(() => {
         if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
           clearInterval(interval);
-          sendMessage(message); // Retry sending the message
+          sendMessage(data); // Retry sending the message
         } else {
           retryCount++;
           console.log(`Socket not open yet, retrying... (${retryCount}/${maxRetries})`);

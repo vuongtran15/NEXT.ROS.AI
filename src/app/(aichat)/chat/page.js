@@ -39,8 +39,7 @@ const ChatPage = () => {
             date: new Date().toISOString().split('T')[0],
             isActive: true,
             type: 'text',
-            newMsg: msg || 'Hello! How can I assist you today?',
-            chatHistory: []
+            newMsg: msg || '',
         };
         setChatDataSource([newChat, ...chatDataSource]);
     };
@@ -117,7 +116,7 @@ const ChatPage = () => {
             <div className='chat-content'>
 
                 {chatDataSource.length > 0 && chatDataSource.find(chat => chat.isActive) ? (
-                    <ChatContainer item={chatDataSource.find(chat => chat.isActive)} />
+                    <ChatContainer item={chatDataSource.find(chat => chat.isActive)} setChatDataSource={setChatDataSource} />
                 ) : (
                     <Introduction addNewChat={addNewChat} />
                 )}

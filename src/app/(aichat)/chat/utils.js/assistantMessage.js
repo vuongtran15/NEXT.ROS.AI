@@ -1,7 +1,7 @@
 
 import { renderChatMessageWithLineBreaks } from "@/utils/chatUtils";
 
-export function SystemMessage({ message }) {
+export function AssistantMessage({ message }) {
     return (<div key={message.id} className="message-container flex justify-start" >
         <div className="message max-w-[70%] p-3 rounded-lg bg-gray-200 text-gray-800 rounded-tl-none" >
             <div className="message-text">{renderChatMessageWithLineBreaks(message.text)}</div>
