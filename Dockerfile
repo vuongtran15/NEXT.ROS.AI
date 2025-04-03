@@ -1,53 +1,23 @@
-# Use Node.js LTS version as the base image for building
-FROM node:20 AS builder
+# Use Node.js 22.14.0 as the base image
+FROM node:22.14.0
 
 # Set working directory
 WORKDIR /app
 
-# Copy package files for dependency installation
-COPY package.json package-lock.json ./
-
-# Set environment variables for Tailwind CSS
-ENV TAILWIND_MODE=build
-ENV NODE_OPTIONS=--max_old_space_size=4096
-
-# Install system dependencies and npm packages
 RUN apt-get update && apt-get install -y \
-    libc6 \
-    libgcc1 \
-    && npm ci \
-    && npm install tailwindcss@latest --save-dev
-
-# Copy project files
-COPY . .
-
-# Build the application
-# RUN npm run build
-
-# Production image
-FROM node:20-slim
-
-WORKDIR /app
-
-# Install minimal runtime dependencies for native binaries
-RUN apt-get update && apt-get install -y \
-    libc6 \
-    libgcc1 \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
+RUN git clone https://github.com/vuongtran15/NEXT.ROS.AI.git ./
 
-# Copy only necessary files from builder stage
-COPY --from=builder /app/package.json /app/package-lock.json ./
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/node_modules ./node_modules
+# remove .next folder
+RUN rm -rf ./.next
 
-# Set production environment
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
+RUN npm install
 
-# Expose the port
-EXPOSE 5000
 
-# Start the application
-CMD ["npm", "start","dev:https"]
+
+# Expose the port the app runs on
+EXPOSE 3000
+
+CMD ["npm", "run", "dev:https"]
