@@ -5,7 +5,7 @@ import { IoAttachSharp } from "react-icons/io5";
 
 
 export function InputControl({ allowTyping = true, onMessageSend }) {
-    const maxLength = 500;
+    const maxLength = 5000;
     const [charCount, setCharCount] = useState(0);
     const inputRef = React.useRef(null);
 
