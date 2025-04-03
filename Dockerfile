@@ -21,4 +21,4 @@ RUN npm install
 # Expose the port the app runs on
 EXPOSE 9001
 
-CMD ["npm", "run", "dev:https","--port 9001"]
+CMD ["npm", "run", "dev:https"]
