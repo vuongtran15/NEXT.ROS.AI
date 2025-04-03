@@ -18,10 +18,10 @@ const ChatPage = () => {
     const fnGetConversationByEmpId = () => {
         apiClient.get("/api/aichat/Client/GetListByEmpId")
             .then((conversations) => {
-                
+
                 console.log("Conversations:", conversations);
                 setChatDataSource(conversations || []);
-                
+
             })
             .catch((error) => {
                 console.error("Error fetching conversations:", error);
@@ -62,6 +62,12 @@ const ChatPage = () => {
     const deleteChat = (e, id) => {
         e.stopPropagation(); // Prevent triggering selectChat
         const updatedHistory = chatDataSource.filter(chat => chat.id !== id);
+
+        apiClient.delete(`/api/aichat/Client/conversation/delete?conversationId=${id}`).then(() => {
+            console.log("Chat deleted successfully");
+        }).catch((error) => {
+            console.error("Error deleting chat:", error);
+        });
 
         // If we're deleting the active chat, make the first remaining chat active
         if (chatDataSource.find(chat => chat.id === id)?.isActive && updatedHistory.length > 0) {
