@@ -16,6 +16,7 @@ export function ChatContainer({ item, setChatDataSource }) {
     useEffect(() => {
 
         fnGetChatMessages();
+        setAllowTyping(true);
 
         return () => {
             destroyWebSocket();

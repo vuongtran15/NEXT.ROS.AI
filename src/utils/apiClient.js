@@ -21,10 +21,8 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
     async (config) => {
         // var token = await getUserFromToken();
-        // console.log("Token from local storage:", token);
         // Add authentication token if available (e.g., from localStorage)
         var user = fnGetUserFromLocalStorage();
-        console.log("User from local storage:", user);
         var empIds = user?.empid || "";
 
         if(config.url.indexOf("empid=")== -1){

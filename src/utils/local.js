@@ -11,13 +11,11 @@ export const LocalStorageKeys = {
 
 // save token to local storage
 export function fnSaveTokenToLocalStorage(token, userInfo) {
-    console.log('Saving token to local storage:', token);
     localStorage.setItem('auth-token', token);
     localStorage.setItem('auth-user', JSON.stringify(userInfo));
 }
 // get token from local storage
 export function fnGetTokenFromLocalStorage() {
-    console.log('Getting token from local storage');
     return localStorage.getItem('auth-token');
 }
 export function fnRemoveTokenFromLocalStorage() {

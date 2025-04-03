@@ -19,7 +19,6 @@ const ChatPage = () => {
         apiClient.get("/api/aichat/Client/GetListByEmpId")
             .then((conversations) => {
 
-                console.log("Conversations:", conversations);
                 setChatDataSource(conversations || []);
 
             })

@@ -14,7 +14,6 @@ export default function useChatWebSocket(chatid, type, callbackCommand = null) {
 
   const connect = () => {
     var user = fnGetUserFromLocalStorage();
-    console.log("Chat ID:", chatid);
     var empid = user?.empid || "";
 
     if (empid === "" || empid === undefined) {
@@ -28,7 +27,6 @@ export default function useChatWebSocket(chatid, type, callbackCommand = null) {
 
     // Handle connection open
     socket.onopen = () => {
-      console.log("WebSocket connection established");
       // Reset reconnect attempts on successful connection
       reconnectAttemptRef.current = 0;
     };
