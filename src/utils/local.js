@@ -1,9 +1,9 @@
 
 
 export const LocalStorageKeys = {
-    SERVER_CHAT_URL: 'http://172.19.137.206:8080',
+    SERVER_CHAT_URL: 'https://172.19.137.206:8080',
     //SERVER_API_URL: 'http://172.19.18.35:8201',
-    SERVER_API_URL: 'http://172.19.137.206:5204',
+    SERVER_API_URL: 'https://172.19.137.206:5204',
     
 };
 

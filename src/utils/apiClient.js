@@ -1,4 +1,5 @@
 import axios from 'axios';
+import https from 'https'; // Import the https module for SSL certificate handling
 import { fnGetUserFromLocalStorage, LocalStorageKeys } from './local';
 
 // Create an Axios instance with default settings
@@ -10,6 +11,10 @@ const apiClient = axios.create({
         'Accept': 'application/json',
         "Access-Control-Allow-Origin": "*"
     },
+    // Disable SSL certificate validation (only for development!)
+    httpsAgent: new https.Agent({
+        rejectUnauthorized: false
+    })
 });
 
 // Request Interceptor
