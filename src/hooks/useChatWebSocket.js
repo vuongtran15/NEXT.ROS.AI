@@ -69,10 +69,12 @@ export default function useChatWebSocket(chatid, type, callbackCommand = null) {
       const existingIndex = prevMessages.findIndex(m => m.id === msgId);
       if (existingIndex !== -1) {
         // If it exists, update the message text
+        var thinkingMsg = "...";
+
         const updatedMessages = [...prevMessages];
         updatedMessages[existingIndex] = {
           ...updatedMessages[existingIndex],
-          text: updatedMessages[existingIndex].text + data.content
+          text: updatedMessages[existingIndex].text == thinkingMsg ? data.content : updatedMessages[existingIndex].text + data.content
         };
         return updatedMessages;
       } else {

@@ -42,11 +42,11 @@ const ChatPage = () => {
 
         const newChat = {
             id: uuidv4(),
-            title: msg || 'New Conversation',
+            title: 'New Conversation',
             date: new Date().toISOString().split('T')[0],
             isActive: true,
             type: 'text',
-            newMsg: msg || '',
+            newMsg: msg || {},
         };
         setChatDataSource([newChat, ...updatedHistory]);
     };
@@ -97,7 +97,7 @@ const ChatPage = () => {
                                 <FiSearch size={16} />
                             </button>
                         </div>
-                        <button className='add-new-chat-button' onClick={e => addNewChat()}>
+                        <button className='add-new-chat-button' onClick={e => addNewChat({text: ""})}>
                             <FiEdit size={18} />
                         </button>
                     </div>

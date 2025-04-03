@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { HiMiniMicrophone } from "react-icons/hi2";
 import { IoAttachSharp } from "react-icons/io5";
 
-
-
 export function InputControl({ allowTyping = true, onMessageSend }) {
     const maxLength = 5000;
     const [charCount, setCharCount] = useState(0);
     const inputRef = React.useRef(null);
+    const fileInputRef = React.useRef(null);
+    const [uploadingFile, setUploadingFile] = useState(false);
 
     // handle paste event to limit pasted text length
     const handlePaste = (e) => {
@@ -80,7 +80,9 @@ export function InputControl({ allowTyping = true, onMessageSend }) {
     const sendMessage = (msg) => {
         if (!msg.trim()) return;
         if (onMessageSend) {
-            onMessageSend(msg);
+            onMessageSend({
+                text: msg,
+            });
         }
         setCharCount(0);
     };
@@ -94,8 +96,55 @@ export function InputControl({ allowTyping = true, onMessageSend }) {
         }
     }, [allowTyping]);
 
+    const handleFileSelection = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            try {
+                setUploadingFile(true);
+                await uploadFile(file);
+            } catch (error) {
+                console.error("Error uploading file:", error);
+                // You could add error handling UI here
+            } finally {
+                setUploadingFile(false);
+                // Reset input value to allow uploading the same file again
+                fileInputRef.current.value = '';
+            }
+        }
+    };
+
+    const uploadFile = async (file) => {
+        // Check file size (limit to 10MB for example)
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        if (file.size > maxSize) {
+            alert("File is too large. Maximum size is 10MB.");
+            return;
+        }
+
+        // Create a FormData object to send the file
+        const formData = new FormData();
+        formData.append('file', file);
+
+        if (!onFileUpload) return;
+        // Call the upload function passed as a prop
+    };
+
+    const openFileSelector = () => {
+        if (allowTyping && !uploadingFile) {
+            fileInputRef.current.click();
+        }
+    };
+
     return (
         <div className='chat-input-container relative bg-white rounded-lg shadow-sm hover:shadow-md transition-all p-3'>
+            <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                onChange={handleFileSelection}
+                accept="image/*,.pdf,.doc,.docx,.txt"
+            />
+
             <div
                 ref={inputRef}
                 contentEditable={allowTyping}
@@ -129,9 +178,12 @@ export function InputControl({ allowTyping = true, onMessageSend }) {
                 </div>
                 <div className='right-items flex flex-row gap-3'>
                     <button
-                        className={`action-btn p-1.5 rounded-full transition-colors text-gray-500 ${allowTyping ? 'hover:bg-gray-100 hover:text-gray-700' : 'opacity-50 cursor-not-allowed'
+                        onClick={openFileSelector}
+                        className={`action-btn p-1.5 rounded-full transition-colors ${uploadingFile ? 'text-blue-500 animate-pulse' : 'text-gray-500'
+                            } ${allowTyping && !uploadingFile ? 'hover:bg-gray-100 hover:text-gray-700' : 'opacity-50 cursor-not-allowed'
                             }`}
-                        disabled={!allowTyping}
+                        disabled={!allowTyping || uploadingFile}
+                        title="Upload file"
                     >
                         <IoAttachSharp size={18} />
                     </button>
@@ -139,6 +191,7 @@ export function InputControl({ allowTyping = true, onMessageSend }) {
                         className={`action-btn p-1.5 rounded-full transition-colors text-gray-500 ${allowTyping ? 'hover:bg-gray-100 hover:text-gray-700' : 'opacity-50 cursor-not-allowed'
                             }`}
                         disabled={!allowTyping}
+                        title="Voice input"
                     >
                         <HiMiniMicrophone size={18} />
                     </button>

@@ -26,9 +26,9 @@ export function ChatContainer({ item, setChatDataSource }) {
     const fnGetChatMessages = () => {
         apiClient.get("/api/aichat/Client/message/list?conversationId=" + item.id).then((response) => {
             setChatMessages(response || []);
-            if (item.newMsg && item.newMsg !== "") {
+            if (item.newMsg && item.newMsg.text !== "") {
                 sendMessage({
-                    text: item.newMsg,
+                    text: item.newMsg.text,
                 });
             }
 
@@ -37,10 +37,10 @@ export function ChatContainer({ item, setChatDataSource }) {
         });
     }
 
-    const fnOnUserMessage = (message) => {
+    const fnOnUserMessage = (msg) => {
         setAllowTyping(false);
         sendMessage({
-            text: message,
+            text: msg.text,
         });
     };
 
